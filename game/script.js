@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreDisplay = document.getElementById('score-display');
     const livesDisplay = document.getElementById('lives-display');
     const gameOverScreen = document.getElementById('game-over');
-
+    const winScreenElement = document.getElementById('win-screen');
     const startScreenElement = document.getElementById('start-screen');
     const startButtonElement = document.getElementById('start-button');
     // **** 1. PRELOAD AUDIO ****
@@ -187,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let piggyLane = 0;
     let isShielding = false;
     let isGameOver = false;
+    let isGameWon = false;
     let strings = [];
     let spawnTimer = null;
     let lastFrameTime = 0;
@@ -214,7 +215,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const minBottom = 5;
         piggyElement.style.bottom = `${Math.max(minBottom, Math.min(maxBottom, targetBottom))}px`;
     }
-    function updateScore() { scoreDisplay.textContent = score; }
+    function updateScore() {
+        scoreDisplay.textContent = score;
+        // Check for win condition *here*
+        if (score >= 100 && !isGameOver && !isGameWon) { // Added !isGameWon check
+            winGame();
+        }
+    }
     function updateLives() { /* same as before */
         let hearts = '';
         for (let i = 0; i < 3; i++) {
@@ -328,7 +335,27 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOverScreen.style.display = 'flex'; // Show GAME OVER message
         console.log("Game Over!");
     }
+    function winGame() {
+        if (isGameOver || isGameWon) return; // Prevent multiple calls
+        console.log("Game Over - Won!");
+        isGameOver = true; // Mark game as stopped
+        isGameWon = true; // Mark as won
+        cancelAnimationFrame(animationFrameId); animationFrameId = null;
+        clearInterval(spawnTimer); spawnTimer = null;
 
+        // Optional: Center piggy on win screen too? Or hide it?
+        piggyElement.classList.add('game-over-position'); // Reuse centering class
+        piggyElement.classList.remove('shielding');
+
+        // Show WIN screen
+        if (winScreenElement) {
+            winScreenElement.style.display = 'flex';
+        } else {
+            console.error("Win screen element not found!");
+        }
+        // Optional: Play win sound
+        // winSound.play();
+    }
     function gameLoop(currentTime) {
         if (isGameOver) return;
         if (!gameWidth || !gameHeight || !stringBaseSpeed || !gameArea) {
@@ -483,7 +510,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // Make sure game-over screen is hidden
         gameOverScreen.style.display = 'none';
         // Make sure start screen is hidden (in case of restart)
-        if(startScreenElement) startScreenElement.style.display = 'none';
+        if (startScreenElement) startScreenElement.style.display = 'none';
+        if (winScreenElement) winScreenElement.style.display = 'none'; // Hide win screen
         
         
          if (!gameArea || !piggyElement || !scoreDisplay || !livesDisplay || !gameOverScreen) {
@@ -492,6 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
          isGameOver = false;
+         isGameWon = false;
          score = 0;
          lives = 3;
          isShielding = false;
@@ -563,8 +592,19 @@ document.addEventListener('DOMContentLoaded', () => {
              }
          }, 250);
       });
+      if (startButtonElement && startScreenElement) {
+        startButtonElement.addEventListener('click', () => { /* ... hide start, call init ... */ });
+    } else { console.error("Start screen elements not found!"); }
 
-      // Keep Game Over restart listener
+
+    // **** Win Screen Restart Listener ****
+    if (winScreenElement) {
+        winScreenElement.addEventListener('click', () => {
+            console.log("Restarting game from Win Screen...");
+            init(); // Call init to restart
+        });
+    }
+      // Game Over restart listener
     gameOverScreen.addEventListener('click', () => {
         console.log("Restarting game from Game Over...");
         init(); // Re-initialize the game on click
