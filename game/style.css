@@ -1,0 +1,264 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevent body scrollbars */
+    font-family: sans-serif;
+}
+
+/* --- START SCREEN STYLES --- */
+#start-screen {
+    position: absolute; /* Changed to absolute to cover game-container */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(40, 40, 60, 0.9); /* Dark semi-transparent background */
+    z-index: 20; /* Ensure it's on top of everything initially */
+    display: flex; /* Use flexbox for centering */
+    flex-direction: column; /* Stack image above button */
+    justify-content: center; /* Center vertically */
+    align-items: center; /* Center horizontally */
+    text-align: center;
+}
+
+#start-image {
+    max-width: 60%; /* Limit image width */
+    max-height: 50vh; /* Limit image height based on viewport height */
+    margin-bottom: 30px; /* Space between image and button */
+    border-radius: 10px; /* Optional: slightly rounded image corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); /* Optional: shadow effect */
+}
+
+#start-button {
+    padding: 12px 35px; /* Button size */
+    font-size: 1.4em; /* Button text size */
+    font-weight: bold;
+    color: white;
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    border: none;
+    border-radius: 50px; /* Make it very rounded (pill shape) */
+    cursor: pointer;
+    outline: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    /* Smooth transition for hover effect */
+    transition: background-color 0.2s ease-out, transform 0.1s ease-out;
+}
+
+#start-button:hover {
+    background-color: #0a58ca; /* Darker blue on hover */
+    transform: scale(1.03); /* Slightly enlarge on hover */
+}
+/* --- END START SCREEN STYLES --- */
+
+
+#game-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+     background-color: #fdffe8; /* Light blue-grey background */
+    background-image: url('bg.jpg') !important;
+
+}
+/* --- Info Bar Layout --- */
+#info-bar {
+    display: grid;
+    /* Define 3 columns as before */
+    grid-template-columns: 1fr auto 1fr;
+    /* Explicitly define ONE row */
+    grid-template-rows: auto;
+    /* Align items vertically within the single row (optional, center is often good) */
+    align-items: center;
+    padding: 5px 15px;
+    flex-shrink: 0;
+    gap: 10px;
+}
+
+#game-title {
+    grid-column: 1 / 4;
+     /* Place in the first (and only) row */
+     grid-row: 1 / 1;
+
+    /* Keep visual styles */
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 1.1em;
+    margin: 0;
+}
+#score-container {
+    /* Place in the middle column (column 2) */
+    grid-column: 2 / 3;
+    /* Place in the first (and only) row */
+    grid-row: 1 / 1;
+    justify-self: center; /* Center horizontally in its column */
+    /* Keep visual styles */
+    border: 1px solid #888;
+    font-weight: bold; /* Make it stand out a bit */
+    color: white;
+    padding: 5px 8px;
+    background-color: #00c518;
+    border-radius: 4px;
+    font-size: 1.1em;
+    margin: 0;
+    z-index: 15;
+}
+
+#lives-container {
+    /* Place in the rightmost column (column 3) */
+    grid-column: 3 / 4;
+     /* Place in the first (and only) row */
+     grid-row: 1 / 1;
+    justify-self: end; /* Align right in its column */
+    /* Keep visual styles */
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 1.1em;
+    margin: 0;
+}
+
+/* Keep the .lost style for hearts */
+#lives-display span.lost {
+    color: #555;
+    opacity: 0.2;
+}
+
+#game-area {
+    flex-grow: 1; /* Takes up remaining vertical space */
+    width: 100%; /* Takes full width */
+    position: relative;
+    overflow: hidden; /* Hide strings that go outside */
+
+}
+
+#piggy.game-over-position {
+    position: fixed;
+    top: 49%;
+    left: 52%;
+    transform: translate(-50%, -50%);
+    right: auto;
+    bottom: auto;
+    z-index: 11; /* Above overlay background */
+    transition: none; /* No slide transition */
+    /* **** Ensure Normal Pose GIF is shown on Game Over **** */
+    background-image: url('piggy-normal.png') !important; /* <<< REPLACE with your filename/path */
+}
+
+
+#piggy {
+    position: absolute;
+    right: 20px;
+    bottom: 10px; /* Will be overridden by JS lane positioning */
+    /* **** SET DIMENSIONS TO MATCH YOUR GIF **** */
+    width: 70px;
+    height: 70px;
+    transition: bottom 0.1s linear; /* Keep transition for gameplay movement */
+    z-index: 5; /* Normal gameplay z-index */
+
+    /* **** ADD BACKGROUND STYLES **** */
+    background-repeat: no-repeat; /* Don't tile the GIF */
+    background-position: center center; /* Center the GIF within the div */
+    /* Adjust background-size as needed: */
+    /* background-size: contain; */ /* Scales down to fit, maintains aspect ratio */
+    /* background-size: cover; */   /* Scales up/down to cover, maintains aspect ratio, might crop */
+    background-size: 100% 100%; /* Stretches to fit exact div dimensions */
+    /* Set DEFAULT background image (normal pose) */
+    background-image: url('piggy-normal.png'); /* <<< REPLACE with your actual filename/path */
+}
+
+#piggy.shielding {
+    background-image: url('piggy-shielding.png'); /* <<< REPLACE with your actual filename/path */
+    /* Optional: Adjust size/position if shield GIF is different */
+}
+
+
+
+
+.string {
+    position: absolute;
+    color: #1f1f1f;
+    font-size: 16px;
+    font-weight: bold;
+    white-space: nowrap;
+    padding: 2px 5px;
+  /*  background-color: rgba(211, 224, 230, 0.6); */
+    border-radius: 3px;
+    z-index: 1; /* Below piggy */
+    /* Add transition for smooth effect changes */
+    transition: transform 0.15s ease-out, color 0.15s ease-out, text-shadow 0.15s ease-out;
+    /* Ensure transform works correctly */
+    display: inline-block; /* Or block, depending on other layout needs */
+    transform-origin: center left; /* Scale from the center-left point */
+}
+
+
+
+/* Style for BLOCKED GOOD string (Red Flash) - Also used for MISSED BAD */
+.flash-block-good {
+    color: red;
+    transform: scale(1.1); /* Make slightly bigger */
+    /* Red glow using text-shadow (adjust values as needed) */
+    text-shadow: 0 0 6px red, 0 0 10px rgba(255, 50, 50, 0.6);
+    z-index: 2; /* Bring slightly forward during flash if needed */
+}
+
+/* Style for BLOCKED BAD string (Green Flash) */
+.flash-block-bad {
+    color: #32cd32; /* LimeGreen */
+    transform: scale(1.1); /* Make slightly bigger */
+    /* Green glow using text-shadow (adjust values as needed) */
+    text-shadow: 0 0 6px #32cd32, 0 0 10px rgba(50, 255, 50, 0.6);
+    z-index: 2; /* Bring slightly forward during flash if needed */
+}
+
+#game-area.background-flash-red {
+    background-color: #ffcccc; /* Light Red */
+}
+
+#help-text {
+    text-align: center;
+    padding: 8px;
+    font-size: 0.9em;
+    
+    color: #333;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+#help-text span {
+    margin: 0 2px;
+}
+
+#help-text .key-hint-space {
+    background-color: #13a3e9; /* DodgerBlue */
+    color: white;
+    padding: 2px 6px; /* Small padding for box shape */
+    border-radius: 3px; /* Slightly rounded corners */
+    /* Ensure padding is applied correctly */
+    display: inline-block;
+}
+
+#game-over {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Slightly darker background */
+    color: red; /* Default color for the art */
+    /* Remove font-size/weight from here, style the <pre> instead */
+    display: none; /* Initially hidden */
+    /* Flexbox for centering the <pre> block */
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+}
+
+/* Style the <pre> tag containing the ASCII art */
+#game-over pre {
+    font-family: "Courier New", Courier, monospace; /* Crucial: Use a monospace font */
+    font-size: 1.1vw; /* Adjust size as needed for readability. vw makes it responsive. */
+    line-height: 1;   /* Make lines closer together */
+    text-shadow: 0 0 3px rgba(255, 0, 0, 0.7); /* Add a subtle glow */
+    margin: 0; /* Remove any default margins */
+    padding: 10px; /* Optional padding around the art */
+    white-space: pre; /* Ensure whitespace is preserved (redundant but safe) */
+}

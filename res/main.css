@@ -1,79 +1,75 @@
-* {background:transparent;border:0 none;font-size:100%;margin:0;padding:0;outline:0;vertical-align:top}
-   
+* {
+  background: transparent;
+  border: 0 none;
+  font-size: 100%;
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  vertical-align: top;
+}
+
 @keyframes rotate {
-0% {
-  -moz-transform: rotate(0deg);
-  -webkit-transform: rotate(0deg);
-  -o-transform: rotate(0deg);
-  -ms-transform: rotate(0deg);
-  transform: rotate(0deg);
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
-100% {
-  -moz-transform: rotate(360deg);
-  -webkit-transform: rotate(360deg);
-  -o-transform: rotate(360deg);
-  -ms-transform: rotate(360deg);
-  transform: rotate(360deg);
-}
-} 
 
 @keyframes bounceInRight {
   from, 60%, 75%, 90%, to {
-    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
     animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
   }
   from {
     opacity: 0;
-    -webkit-transform: translate3d(3000px, 0, 0);
     transform: translate3d(3000px, 0, 0);
   }
   60% {
     opacity: 1;
-    -webkit-transform: translate3d(-25px, 0, 0);
     transform: translate3d(-25px, 0, 0);
   }
   75% {
-    -webkit-transform: translate3d(10px, 0, 0);
     transform: translate3d(10px, 0, 0);
   }
   90% {
-    -webkit-transform: translate3d(-5px, 0, 0);
     transform: translate3d(-5px, 0, 0);
   }
   to {
-    -webkit-transform: none;
     transform: none;
   }
 }
 
 .bounceInRight {
-  -webkit-animation-name: bounceInRight;
   animation-name: bounceInRight;
 }
 
 .w {
-	position: absolute;	
-    height: 100vh;
-    width: 100vw;
-}
-.c {
-	position:absolute;
-	top: 50%;
-	left: 50%;
-	margin-top: -25px;
-	margin-left: -25px;
-	font-size: 50px;
-}
-		
-		
-a {
-  text-decoration: none;
+  position: absolute;
+  height: 100vh;
+  width: 100vw;
 }
 
-.c:hover,.c:active
-{
-  animation-name: rotate;
-  animation-duration: 4s;
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+.c {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+/* Apply the hover animation only to the link */
+a.link {
+  text-decoration: none;
+  font-size: 50px;
+  display: inline-block;
+}
+
+a.link:hover,
+a.link:active {
+  animation: rotate 4s infinite linear;
+}
+
+.message {
+  font-size: 20px;
+  margin-top: 10px;
+  font-size: 1.4em; /* Button text size */
+  font-weight: bold;
+  animation: bounceInRight 1s;
 }
